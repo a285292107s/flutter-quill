@@ -91,10 +91,12 @@ class _HomePageState extends State<HomePage> {
             onPressed: () => showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                content: Text(_controller!.document.toPlainText([
-                  ...FlutterQuillEmbeds.builders(),
-                  TimeStampEmbedBuilderWidget()
-                ])),
+                content: SingleChildScrollView(
+                  child: Text(_controller!.document.toPlainText([
+                    ...FlutterQuillEmbeds.builders(),
+                    TimeStampEmbedBuilderWidget()
+                  ])),
+                ),
               ),
             ),
             icon: const Icon(Icons.text_fields_rounded),

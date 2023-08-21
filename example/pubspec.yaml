@@ -35,6 +35,7 @@ dependencies:
     path: ../
   flutter_quill_extensions:
     path: ../flutter_quill_extensions
+  google_fonts: ^4.0.4
 
 dependency_overrides:
   flutter_quill:
@@ -87,6 +88,14 @@ flutter:
     - family: roboto-mono
       fonts:
         - asset: assets/fonts/RobotoMono-Regular.ttf
+    - family: LXGWWenKai
+      fonts:
+        - asset: assets/fonts/LXGWWenKai-Light.ttf
+          weight: 300
+        - asset: assets/fonts/LXGWWenKai-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/LXGWWenKai-Regular.ttf  
+          weight: 400
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

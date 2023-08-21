@@ -159,10 +159,11 @@ class Document {
     return (res.node as Line).collectStyle(res.offset, len);
   }
 
-  /// Returns all styles for each node within selection
-  List<OffsetValue<Style>> collectAllIndividualStyles(int index, int len) {
+  /// Returns all styles and Embed for each node within selection
+  List<OffsetValue> collectAllIndividualStyleAndEmbed(int index, int len) {
     final res = queryChild(index);
-    return (res.node as Line).collectAllIndividualStyles(res.offset, len);
+    return (res.node as Line)
+        .collectAllIndividualStylesAndEmbed(res.offset, len);
   }
 
   /// Returns all styles for any character within the specified text range.
@@ -194,16 +195,21 @@ class Document {
     return block.queryChild(res.offset, true);
   }
 
-  /// Search the whole document for any substring matching the pattern
-  /// Returns the offsets that matches the pattern
-  List<int> search(Pattern other) {
+  /// Search given [substring] in the whole document
+  /// Supports [caseSensitive] and [wholeWord] options
+  /// Returns correspondent offsets
+  List<int> search(
+    String substring, {
+    bool caseSensitive = false,
+    bool wholeWord = false,
+  }) {
     final matches = <int>[];
     for (final node in _root.children) {
       if (node is Line) {
-        _searchLine(other, node, matches);
+        _searchLine(substring, caseSensitive, wholeWord, node, matches);
       } else if (node is Block) {
         for (final line in Iterable.castFrom<dynamic, Line>(node.children)) {
-          _searchLine(other, line, matches);
+          _searchLine(substring, caseSensitive, wholeWord, line, matches);
         }
       } else {
         throw StateError('Unreachable.');
@@ -212,10 +218,22 @@ class Document {
     return matches;
   }
 
-  void _searchLine(Pattern other, Line line, List<int> matches) {
+  void _searchLine(
+    String substring,
+    bool caseSensitive,
+    bool wholeWord,
+    Line line,
+    List<int> matches,
+  ) {
     var index = -1;
+    final lineText = line.toPlainText();
+    var pattern = RegExp.escape(substring);
+    if (wholeWord) {
+      pattern = r'\b' + pattern + r'\b';
+    }
+    final searchExpression = RegExp(pattern, caseSensitive: caseSensitive);
     while (true) {
-      index = line.toPlainText().indexOf(other, index + 1);
+      index = lineText.indexOf(searchExpression, index + 1);
       if (index < 0) {
         break;
       }
